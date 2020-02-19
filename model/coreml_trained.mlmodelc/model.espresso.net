@@ -1,0 +1,60 @@
+{
+  "storage" : "model.espresso.weights",
+  "properties" : {
+
+  },
+  "format_version" : 200,
+  "layers" : [
+    {
+      "nB" : 13,
+      "top" : "outRelu1",
+      "has_biases" : 1,
+      "weights" : {
+
+      },
+      "nC" : 64,
+      "blob_weights" : 3,
+      "type" : "inner_product",
+      "has_relu" : 1,
+      "bottom" : "input",
+      "blob_biases" : 1,
+      "has_tanh" : 0,
+      "name" : "dense1",
+      "has_prelu" : 0
+    },
+    {
+      "nB" : 64,
+      "top" : "outRelu2",
+      "has_biases" : 1,
+      "weights" : {
+
+      },
+      "nC" : 32,
+      "blob_weights" : 7,
+      "type" : "inner_product",
+      "has_relu" : 1,
+      "bottom" : "outRelu1",
+      "blob_biases" : 5,
+      "has_tanh" : 0,
+      "name" : "dense2",
+      "has_prelu" : 0
+    },
+    {
+      "nB" : 32,
+      "top" : "output",
+      "has_biases" : 1,
+      "weights" : {
+
+      },
+      "nC" : 1,
+      "blob_weights" : 11,
+      "type" : "inner_product",
+      "has_relu" : 0,
+      "bottom" : "outRelu2",
+      "blob_biases" : 9,
+      "has_tanh" : 0,
+      "name" : "dense3",
+      "has_prelu" : 0
+    }
+  ]
+}

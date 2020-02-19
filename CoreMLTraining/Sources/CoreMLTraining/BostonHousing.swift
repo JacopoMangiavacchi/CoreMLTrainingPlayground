@@ -243,4 +243,21 @@ public struct BostonHousing {
 
         updateTask.resume()
     }
+    
+    public func inferenceCoreML(model: MLModel, x: [Float]) -> Float {
+        let inputName = "input"
+        
+        let multiArr = try! MLMultiArray(shape: [13], dataType: .float32)
+        for c in 0..<(numColumns-1) {
+            multiArr[c] = NSNumber(value: x[c])
+        }
+
+        let inputValue = MLFeatureValue(multiArray: multiArr)
+        let dataPointFeatures: [String: MLFeatureValue] = [inputName: inputValue]
+        let provider = try! MLDictionaryFeatureProvider(dictionary: dataPointFeatures)
+        
+        let prediction = try! model.prediction(from: provider)
+
+        return Float(prediction.featureValue(for: "output")!.multiArrayValue![0].floatValue)
+    }
 }
