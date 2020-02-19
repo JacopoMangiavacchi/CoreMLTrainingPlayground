@@ -1,14 +1,5 @@
 import Foundation
 
-var str = "Hello, playground"
-
-let t = Test(a: 1)
-
-t.a
-
-let t2 = Test2(a: 1)
-t2.a
-
 let coremlModel = Model(version: 4,
                         shortDescription: "Regression",
                         author: "Jacopo Mangiavacchi",
