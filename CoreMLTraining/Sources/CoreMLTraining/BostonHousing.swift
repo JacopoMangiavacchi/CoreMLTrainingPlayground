@@ -143,4 +143,104 @@ public struct BostonHousing {
         print("Compiled Model Path: \(compiledUrl)")
         return try! (MLModel(contentsOf: compiledUrl), compiledUrl)
     }
+
+    func prepareTrainingBatch() -> MLBatchProvider {
+        var featureProviders = [MLFeatureProvider]()
+
+        let inputName = "input"
+        let outputName = "output_true"
+        
+        for r in 0..<numTrainRecords {
+            let inputMultiArr = try! MLMultiArray(shape: [13], dataType: .float32)
+            let outputMultiArr = try! MLMultiArray(shape: [1], dataType: .float32)
+
+            for c in 0..<(numColumns-1) {
+                inputMultiArr[c] = NSNumber(value: xTrain[r][c])
+            }
+
+            outputMultiArr[0] = NSNumber(value: yTrain[r][0])
+
+            let inputValue = MLFeatureValue(multiArray: inputMultiArr)
+            let outputValue = MLFeatureValue(multiArray: outputMultiArr)
+             
+            let dataPointFeatures: [String: MLFeatureValue] = [inputName: inputValue,
+                                                               outputName: outputValue]
+             
+            if let provider = try? MLDictionaryFeatureProvider(dictionary: dataPointFeatures) {
+                featureProviders.append(provider)
+            }
+        }
+         
+        return MLArrayBatchProvider(array: featureProviders)
+    }
+    
+    public func train(url: URL, retrainedCoreMLFilePath: String) {
+        let configuration = MLModelConfiguration()
+        configuration.computeUnits = .all
+        //configuration.parameters = [.epochs : 100]
+
+        let progressHandler = { (context: MLUpdateContext) in
+            switch context.event {
+            case .trainingBegin:
+                print("Training begin")
+
+            case .miniBatchEnd:
+                break
+//                let batchIndex = context.metrics[.miniBatchIndex] as! Int
+//                let batchLoss = context.metrics[.lossValue] as! Double
+//                print("Mini batch \(batchIndex), loss: \(batchLoss)")
+
+            case .epochEnd:
+                let epochIndex = context.metrics[.epochIndex] as! Int
+                let trainLoss = context.metrics[.lossValue] as! Double
+                print("Epoch \(epochIndex) end with loss \(trainLoss)")
+
+            default:
+                print("Unknown event")
+            }
+
+    //        print(context.model.modelDescription.parameterDescriptionsByKey)
+
+    //        do {
+    //            let multiArray = try context.model.parameterValue(for: MLParameterKey.weights.scoped(to: "dense_1")) as! MLMultiArray
+    //            print(multiArray.shape)
+    //        } catch {
+    //            print(error)
+    //        }
+        }
+
+        let completionHandler = { (context: MLUpdateContext) in
+            print("Training completed with state \(context.task.state.rawValue)")
+            print("CoreML Error: \(context.task.error.debugDescription)")
+
+            if context.task.state != .completed {
+                print("Failed")
+                return
+            }
+
+            let trainLoss = context.metrics[.lossValue] as! Double
+            print("Final loss: \(trainLoss)")
+
+            
+            let updatedModel = context.model
+            let updatedModelURL = URL(fileURLWithPath: retrainedCoreMLFilePath)
+            try! updatedModel.write(to: updatedModelURL)
+            
+            print("Model Trained!")
+            print("Press return to continue..")
+        }
+
+        let handlers = MLUpdateProgressHandlers(
+                            forEvents: [.trainingBegin, .miniBatchEnd, .epochEnd],
+                            progressHandler: progressHandler,
+                            completionHandler: completionHandler)
+        
+        
+        let updateTask = try! MLUpdateTask(forModelAt: url,
+                                           trainingData: prepareTrainingBatch(),
+                                           configuration: configuration,
+                                           progressHandlers: handlers)
+
+        updateTask.resume()
+    }
 }

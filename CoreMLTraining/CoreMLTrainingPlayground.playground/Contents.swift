@@ -10,3 +10,8 @@ boston.saveModel(path: folderPath + "model/coreml_no_trained.mlmodel")
 
 let (untrainedModel, compiledModelUrl) = boston.compileCoreML(path: folderPath + "model/coreml_no_trained.mlmodel")
 
+print("CoreML train")
+boston.train(url: compiledModelUrl, retrainedCoreMLFilePath: folderPath + "model/coreml_trained.mlmodelc")
+
+Thread.sleep(forTimeInterval: 10)
+
