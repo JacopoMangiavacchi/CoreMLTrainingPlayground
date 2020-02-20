@@ -8,6 +8,7 @@ The Playground directly include copies of the references to SwiftCoreMLTools and
 
 ## CoreML Trainable Model with SwiftCoreMLTools
 
+```swift
 let coremlModel = Model(version: 4,
                         shortDescription: "Regression",
                         author: "Jacopo Mangiavacchi",
@@ -55,5 +56,4 @@ let coremlModel = Model(version: 4,
                      updatable: true)
     }
 }
-
-
+```
