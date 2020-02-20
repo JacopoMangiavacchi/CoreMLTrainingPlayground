@@ -4,7 +4,7 @@ Test [SwiftCoreMLTools](https://github.com/JacopoMangiavacchi/SwiftCoreMLTools) 
 
 This repo contains a Swift Playground that use SwiftCoreMLTools to generate the CoreML model and the Apple CoreML runtime APIs to train and inference the model.
 
-The Playground directly include copies of the references to SwiftCoreMLTools and SwiftProtobuf SPM libraries.
+The Playground directly include copies of the SwiftCoreMLTools and SwiftProtobuf SPM libraries.
 
 ## CoreML Trainable Model with SwiftCoreMLTools
 
