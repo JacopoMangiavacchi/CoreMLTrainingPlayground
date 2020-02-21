@@ -75,7 +75,7 @@ public struct BostonHousing {
         self.xTest = xTestNormalized
     }
     
-    public func saveModel(path: String) {
+    public func saveModel(fileURL: URL) {
         let coremlModel = Model(version: 4,
                                 shortDescription: "Regression",
                                 author: "Jacopo Mangiavacchi",
@@ -125,12 +125,11 @@ public struct BostonHousing {
         }
 
         let coreMLData = coremlModel.coreMLData
-        try! coreMLData!.write(to: URL(fileURLWithPath: path))
+        try! coreMLData!.write(to: fileURL, options: .atomic)
     }
     
-    public func compileCoreML(path: String) -> (MLModel, URL) {
-        let modelUrl = URL(fileURLWithPath: path)
-        let compiledUrl = try! MLModel.compileModel(at: modelUrl)
+    public func compileCoreML(fileURL: URL) -> (MLModel, URL) {
+        let compiledUrl = try! MLModel.compileModel(at: fileURL)
         
         print("Compiled Model Path: \(compiledUrl)")
         return try! (MLModel(contentsOf: compiledUrl), compiledUrl)
@@ -166,7 +165,7 @@ public struct BostonHousing {
         return MLArrayBatchProvider(array: featureProviders)
     }
     
-    public func train(url: URL, retrainedCoreMLFilePath: String) {
+    public func train(url: URL, retrainedCoreMLFileUrl: URL) {
         let configuration = MLModelConfiguration()
         configuration.computeUnits = .all
         //configuration.parameters = [.epochs : 100]
@@ -215,8 +214,7 @@ public struct BostonHousing {
 
             
             let updatedModel = context.model
-            let updatedModelURL = URL(fileURLWithPath: retrainedCoreMLFilePath)
-            try! updatedModel.write(to: updatedModelURL)
+            try! updatedModel.write(to: retrainedCoreMLFileUrl)
             
             print("Model Trained!")
             print("Press return to continue..")

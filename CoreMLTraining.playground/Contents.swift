@@ -1,14 +1,16 @@
 import Foundation
 import CoreML
-
-let folderPath = "/Users/jacopo/CoreMLTraining/"
+import PlaygroundSupport
 
 let fileURL = Bundle.main.url(forResource: "housing", withExtension: "csv")
 let boston = BostonHousing(fileURL: fileURL!)
 
-boston.saveModel(path: folderPath + "model/coreml_no_trained.mlmodel")
+print(playgroundSharedDataDirectory)
 
-let (untrainedModel, compiledModelUrl) = boston.compileCoreML(path: folderPath + "model/coreml_no_trained.mlmodel")
+let modelURLNoTrain = playgroundSharedDataDirectory.appendingPathComponent("coreml_no_trained.mlmodel")
+boston.saveModel(fileURL: modelURLNoTrain)
+
+let (untrainedModel, compiledModelUrl) = boston.compileCoreML(fileURL: modelURLNoTrain)
 
 print("CoreML inference")
 
@@ -19,12 +21,13 @@ print(boston.xTest[17], boston.yTest[17], boston.inferenceCoreML(model: untraine
 
 
 print("CoreML train")
-boston.train(url: compiledModelUrl, retrainedCoreMLFilePath: folderPath + "model/coreml_trained.mlmodelc")
+let modelURLTrain = playgroundSharedDataDirectory.appendingPathComponent("coreml_trained.mlmodelc")
+boston.train(url: compiledModelUrl, retrainedCoreMLFileUrl: modelURLTrain)
 
 Thread.sleep(forTimeInterval: 10)
 
 print("Load CoreML Retrained Model")
-let retrainedModel = try! MLModel(contentsOf: URL(fileURLWithPath: folderPath + "model/coreml_trained.mlmodelc"))
+let retrainedModel = try! MLModel(contentsOf: modelURLTrain)
 
 print("CoreML inference")
 

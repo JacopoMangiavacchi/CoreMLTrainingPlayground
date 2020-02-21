@@ -6,6 +6,8 @@ This repo contains a Swift Playground that use SwiftCoreMLTools to generate the 
 
 The Playground directly include copies of the SwiftCoreMLTools and SwiftProtobuf SPM libraries.
 
+> Important: You must create the ~/Documents/Shared Playground Data/ directory. Xcode doesn’t create the directory for you.
+
 ## CoreML Trainable Model with SwiftCoreMLTools
 
 ```swift
