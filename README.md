@@ -1,6 +1,6 @@
-# CoreMLTraining
+# CoreMLTrainingPlaygroung
 
-Test [SwiftCoreMLTools](https://github.com/JacopoMangiavacchi/SwiftCoreMLTools) library to create and train directly on the CoreML runtime a real Regression model based on the [Boston housing price dataset](https://archive.ics.uci.edu/ml/machine-learning-databases/housing/).
+Experiment with Xcode Swift Playground and the [SwiftCoreMLTools](https://github.com/JacopoMangiavacchi/SwiftCoreMLTools) library to create and train directly on the CoreML runtime a real Regression model based on the [Boston housing price dataset](https://archive.ics.uci.edu/ml/machine-learning-databases/housing/).
 
 This repo contains a Swift Playground that use SwiftCoreMLTools to generate the CoreML model and the Apple CoreML runtime APIs to train and inference the model.
 
